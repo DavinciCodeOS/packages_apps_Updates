@@ -201,7 +201,7 @@ public class UpdatesActivity extends UpdatesListActivity {
             }
         });
 
-        mExtrasFragment = new ExtrasFragment();
+        mExtrasFragment = new ExtrasFragment(this);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.extras_view, mExtrasFragment)
                 .commit();
@@ -375,7 +375,7 @@ public class UpdatesActivity extends UpdatesListActivity {
         }
     }
 
-    private void downloadUpdatesList(final boolean manualRefresh) {
+    void downloadUpdatesList(final boolean manualRefresh) {
         final File jsonFile = Utils.getCachedUpdateList(this);
         final File jsonFileTmp = new File(jsonFile.getAbsolutePath() + UUID.randomUUID());
         SharedPreferences sharedPref = this.getSharedPreferences(

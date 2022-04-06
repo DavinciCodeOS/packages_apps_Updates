@@ -27,6 +27,7 @@ import java.util.Objects;
 
 public class ExtrasFragment extends Fragment {
 
+    private UpdatesActivity updater;
     private View mainView;
     private LinearLayout maintainersLayout;
     private ExtraCardView donateCard;
@@ -34,6 +35,10 @@ public class ExtrasFragment extends Fragment {
     private ExtraCardView websiteCard;
     private ExtraCardView newsCard;
     private ExtraCardView prereleaseToggleCard;
+
+    public ExtrasFragment(UpdatesActivity updater) {
+        this.updater = updater;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -127,6 +132,7 @@ public class ExtrasFragment extends Fragment {
                             enabled = false;
                         }
                         Utils.setPrereleaseStatus(sharedPrefs, enabled);
+                        updater.downloadUpdatesList(true);
                     }
                 });
         AlertDialog dialog = builder.create();
