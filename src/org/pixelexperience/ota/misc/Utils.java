@@ -17,6 +17,7 @@
 package org.pixelexperience.ota.misc;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
@@ -29,11 +30,14 @@ import android.os.SystemProperties;
 import android.os.storage.StorageManager;
 import android.util.Log;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.pixelexperience.ota.R;
 import org.pixelexperience.ota.controller.UpdaterService;
 import org.pixelexperience.ota.model.MaintainerInfo;
 import org.pixelexperience.ota.model.Update;
@@ -55,6 +59,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import static com.google.android.material.internal.ContextUtils.getActivity;
 
 public class Utils {
 
@@ -151,15 +157,14 @@ public class Utils {
         return null;
     }
 
-    private static String getBuildType(){
+    private static String getBuildType() {
         return SystemProperties.get(Constants.PROP_BUILD_TYPE, "");
     }
 
-    public static String getServerURL() {
-        String buildType = getBuildType();
-        if (buildType.equals("OFFICIAL")){
+    public static String getServerURL(SharedPreferences sharedPref) {
+        if (!getPrereleaseEnabled(sharedPref)) {
             return String.format(Constants.OTA_URL, SystemProperties.get(Constants.PROP_DEVICE), SystemProperties.get(Constants.PROP_BUILD_VERSION));
-        }else{
+        } else {
             return String.format(Constants.OTA_CI_URL, SystemProperties.get(Constants.PROP_DEVICE), SystemProperties.get(Constants.PROP_BUILD_VERSION));
         }
     }
@@ -170,6 +175,16 @@ public class Utils {
 
     public static String getDownloadWebpageUrl(String fileName) {
         return String.format(Constants.DOWNLOAD_WEBPAGE_URL, SystemProperties.get(Constants.PROP_DEVICE), fileName);
+    }
+
+    public static boolean getPrereleaseEnabled(SharedPreferences sharedPref) {
+        return sharedPref.getBoolean("prereleases_enabled", false);
+    }
+
+    public static void setPrereleaseStatus(SharedPreferences sharedPref, boolean value) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("prereleases_enabled", value);
+        editor.apply();
     }
 
     public static void triggerUpdate(Context context) {

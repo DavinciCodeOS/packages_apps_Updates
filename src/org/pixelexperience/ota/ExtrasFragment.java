@@ -1,7 +1,10 @@
 package org.pixelexperience.ota;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -19,6 +23,7 @@ import org.pixelexperience.ota.model.MaintainerInfo;
 import org.pixelexperience.ota.model.UpdateInfo;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ExtrasFragment extends Fragment {
 
@@ -28,6 +33,7 @@ public class ExtrasFragment extends Fragment {
     private ExtraCardView forumCard;
     private ExtraCardView websiteCard;
     private ExtraCardView newsCard;
+    private ExtraCardView prereleaseToggleCard;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +44,7 @@ public class ExtrasFragment extends Fragment {
         forumCard = mainView.findViewById(R.id.forum_card);
         websiteCard = mainView.findViewById(R.id.website_card);
         newsCard = mainView.findViewById(R.id.news_card);
+        prereleaseToggleCard = mainView.findViewById(R.id.prerelease_card);
         return mainView;
     }
 
@@ -90,6 +97,40 @@ public class ExtrasFragment extends Fragment {
             newsCard.setVisibility(View.VISIBLE);
         }
 
+        prereleaseToggleCard.setOnClickListener(v -> showPrereleaseToggleDialog());
+        prereleaseToggleCard.setClickable(true);
+        prereleaseToggleCard.setVisibility(View.VISIBLE);
+    }
+
+    private void showPrereleaseToggleDialog() {
+        Activity context = requireActivity();
+        SharedPreferences sharedPrefs = context.getSharedPreferences(
+                "updates_preferences", Context.MODE_PRIVATE);
+        boolean prereleases_enabled = Utils.getPrereleaseEnabled(sharedPrefs);
+        int checkedItem;
+
+        if (prereleases_enabled) {
+            checkedItem = 0;
+        } else {
+            checkedItem = 1;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.prerelease_info_title)
+                .setSingleChoiceItems(R.array.prerelease_options, checkedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        boolean enabled;
+                        if (i == 0) {
+                            enabled = true;
+                        } else {
+                            enabled = false;
+                        }
+                        Utils.setPrereleaseStatus(sharedPrefs, enabled);
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private ExtraCardView createMaintainerCard(Context context) {

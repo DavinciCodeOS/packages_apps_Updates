@@ -89,16 +89,16 @@
                     android:id="@+id/no_new_updates_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/ic_warning"
                     android:drawablePadding="15dp"
-                    android:drawableTint="@color/theme_accent_2"
                     android:gravity="center"
                     android:paddingStart="46dp"
                     android:paddingTop="15dp"
                     android:paddingEnd="46dp"
                     android:paddingBottom="5dp"
                     android:text="@string/list_no_updates"
-                    android:textColor="?android:textColorSecondary" />
+                    android:textColor="?android:textColorSecondary"
+                    app:drawableTopCompat="@drawable/ic_warning"
+                    app:drawableTint="@color/theme_accent_2" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"

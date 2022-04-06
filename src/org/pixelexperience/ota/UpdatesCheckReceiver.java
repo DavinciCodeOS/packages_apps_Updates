@@ -23,6 +23,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -140,7 +141,9 @@ public class UpdatesCheckReceiver extends BroadcastReceiver {
 
         final File json = Utils.getCachedUpdateList(context);
         final File jsonNew = new File(json.getAbsolutePath() + UUID.randomUUID());
-        String url = Utils.getServerURL();
+        SharedPreferences sharedPrefs = context.getSharedPreferences(
+                "updates_preferences", Context.MODE_PRIVATE);
+        String url = Utils.getServerURL(sharedPrefs);
         DownloadClient.DownloadCallback callback = new DownloadClient.DownloadCallback() {
             @Override
             public void onFailure(boolean cancelled) {
