@@ -32,7 +32,7 @@ public final class Constants {
     static final String PROP_BUILD_VERSION = "org.pixelexperience.version";
     static final String OTA_URL = "https://raw.githubusercontent.com/DavinciCodeOS/ota-data/main/%s.json";
     static final String OTA_CI_URL = "https://raw.githubusercontent.com/DavinciCodeOS/ota-data/main/%s_pre.json";
-    static final String MAINTAINER_URL = "https://github.com/DavinciCodeOS";
+    static final String MAINTAINER_URL = "https://github.com/%s";
     static final String DOWNLOAD_WEBPAGE_URL = "https://raw.githubusercontent.com/DavinciCodeOS/ota-data/main/%s_changelog.txt";
     static final String EXPORT_PATH = "PixelExperience-Updates/";
 }
