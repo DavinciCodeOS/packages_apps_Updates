@@ -69,7 +69,8 @@ public class HttpURLConnectionClient implements DownloadClient {
     }
 
     private void setExtraHeaders() {
-        mClient.setRequestProperty("User-Agent", "org.pixelexperience.ota");
+        mClient.setRequestProperty("User-Agent", "org.davincicodeos.ota");
+        mClient.setRequestProperty("Referer", "http://ota.davincicodeos.local");
     }
 
     @Override
