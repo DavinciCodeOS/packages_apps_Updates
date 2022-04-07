@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -27,7 +28,7 @@ import java.util.Objects;
 
 public class ExtrasFragment extends Fragment {
 
-    private UpdatesActivity updater;
+    private final UpdatesActivity updater;
     private View mainView;
     private LinearLayout maintainersLayout;
     private ExtraCardView donateCard;
@@ -102,6 +103,18 @@ public class ExtrasFragment extends Fragment {
             newsCard.setVisibility(View.VISIBLE);
         }
 
+        SharedPreferences sharedPrefs = requireActivity().getSharedPreferences(
+                "updates_preferences", Context.MODE_PRIVATE);
+        boolean prereleases_enabled = Utils.getPrereleaseEnabled(sharedPrefs);
+
+        String prerelease_button_summary;
+        if (prereleases_enabled) {
+            prerelease_button_summary = getString(R.string.prerelease_info_enabled_summary);
+        } else {
+            prerelease_button_summary = getString(R.string.prerelease_info_disabled_summary);
+        }
+
+        prereleaseToggleCard.setSummary(prerelease_button_summary);
         prereleaseToggleCard.setOnClickListener(v -> showPrereleaseToggleDialog());
         prereleaseToggleCard.setClickable(true);
         prereleaseToggleCard.setVisibility(View.VISIBLE);
@@ -142,7 +155,7 @@ public class ExtrasFragment extends Fragment {
     private ExtraCardView createMaintainerCard(Context context) {
         ExtraCardView card = new ExtraCardView(context);
         card.setTitle(getString(R.string.maintainer_info_title));
-        card.setImage(getResources().getDrawable(R.drawable.ic_maintainers_icon, context.getTheme()));
+        card.setImage(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_maintainers_icon));
         card.setCardBackgroundColor(getResources().getColor(R.color.cardview_background, context.getTheme()));
         card.setRadius(getResources().getDimension(R.dimen.extra_card_corner_radius));
         card.setCardElevation(getResources().getDimension(R.dimen.extra_card_elevation));
@@ -156,7 +169,7 @@ public class ExtrasFragment extends Fragment {
     }
 
     private void showSnackbar(int stringId, int duration) {
-        Snackbar.make(getActivity().findViewById(R.id.main_container), stringId, duration).show();
+        Snackbar.make(requireActivity().findViewById(R.id.main_container), stringId, duration).show();
     }
 
     private void openUrl(String url) {

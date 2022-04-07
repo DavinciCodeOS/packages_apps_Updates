@@ -106,8 +106,7 @@
             app:contentPaddingLeft="16dp"
             app:contentPaddingRight="16dp"
             app:contentPaddingTop="16dp"
-            extra_card_view:image="@android:drawable/ic_menu_manage"
-            extra_card_view:summary="@string/prerelease_info_summary"
+            extra_card_view:image="@drawable/ic_settings_icon"
             extra_card_view:title="@string/prerelease_info_title" >
 
         </org.pixelexperience.ota.ExtraCardView>

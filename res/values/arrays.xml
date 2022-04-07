@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="prerelease_options">
-        <item>Install pre-releases</item>
+        <item>Install pre-releases (UNSTABLE, MAY CAUSE DATA LOSS)</item>
         <item>Install stable releases</item>
     </string-array>
 </resources>
