@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="prerelease_options">
-        <item>Install pre-releases (UNSTABLE, MAY CAUSE DATA LOSS)</item>
-        <item>Install stable releases</item>
+    <string-array name="release_channel_options">
+        <item>DavinciCodeOS (stable)</item>
+        <item>DavinciCodeOS (pre-releases, UNSTABLE, MAY CAUSE DATA LOSS)</item>
+        <item>DavinciCodeOSX (stable)</item>
+        <item>DavinciCodeOSX (pre-releases, UNSTABLE, MAY CAUSE DATA LOSS)</item>
     </string-array>
 </resources>

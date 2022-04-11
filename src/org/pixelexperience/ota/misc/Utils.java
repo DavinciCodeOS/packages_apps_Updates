@@ -162,11 +162,23 @@ public class Utils {
     }
 
     public static String getServerURL(SharedPreferences sharedPref) {
-        if (!getPrereleaseEnabled(sharedPref)) {
-            return String.format(Constants.OTA_URL, SystemProperties.get(Constants.PROP_DEVICE), SystemProperties.get(Constants.PROP_BUILD_VERSION));
+        String release_channel = getReleaseChannel(sharedPref);
+        String download_url;
+
+        if (release_channel.equals("dcos_stable")) {
+            download_url = Constants.OTA_URL_DCOS;
+        } else if (release_channel.equals("dcos_pre")) {
+            download_url = Constants.OTA_URL_DCOS_PRE;
+        } else if (release_channel.equals("dcosx_stable")) {
+            download_url = Constants.OTA_URL_DCOSX;
+        } else if (release_channel.equals("dcosx_pre")) {
+            download_url = Constants.OTA_URL_DCOSX_PRE;
         } else {
-            return String.format(Constants.OTA_CI_URL, SystemProperties.get(Constants.PROP_DEVICE), SystemProperties.get(Constants.PROP_BUILD_VERSION));
+            // Fallback
+            download_url = Constants.OTA_URL_DCOS;
         }
+
+        return String.format(download_url, SystemProperties.get(Constants.PROP_DEVICE), SystemProperties.get(Constants.PROP_BUILD_VERSION));
     }
 
     public static String getMaintainerURL(String username) {
@@ -177,13 +189,26 @@ public class Utils {
         return String.format(Constants.DOWNLOAD_WEBPAGE_URL, SystemProperties.get(Constants.PROP_DEVICE), fileName);
     }
 
-    public static boolean getPrereleaseEnabled(SharedPreferences sharedPref) {
-        return sharedPref.getBoolean("prereleases_enabled", false);
+    public static String getReleaseChannel(SharedPreferences sharedPref) {
+        String version_display = SystemProperties.get(Constants.PROP_BUILD_VERSION_DISPLAY);
+        String os_name_pretty = version_display.split("_", 2)[0];
+        String default_channel;
+
+        if (os_name_pretty == "DavinciCodeOS") {
+            default_channel = "dcos_stable";
+        } else if (os_name_pretty == "DavinciCodeOSX") {
+            default_channel = "dcosx_stable";
+        } else {
+            // Fallback
+            default_channel = "dcos_stable";
+        }
+
+        return sharedPref.getString("release_channel", default_channel);
     }
 
-    public static void setPrereleaseStatus(SharedPreferences sharedPref, boolean value) {
+    public static void setReleaseChannel(SharedPreferences sharedPref, String value) {
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("prereleases_enabled", value);
+        editor.putString("release_channel", value);
         editor.apply();
     }
 
@@ -284,9 +309,9 @@ public class Utils {
         }
         for (File file : files) {
             Log.d(TAG, "Deleting " + file.getAbsolutePath());
-            try{
+            try {
                 file.delete();
-            }catch (Exception e){
+            } catch (Exception e){
                 Log.e(TAG, "Failed to delete " + file.getAbsolutePath(), e);
             }
         }

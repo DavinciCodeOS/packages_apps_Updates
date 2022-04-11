@@ -61,9 +61,18 @@ public class ExtrasFragment extends Fragment {
 
     void updatePrefs(UpdateInfo update) {
         Log.d("ExtrasFragment:updatePrefs", "called");
+
+        prereleaseToggleCard.setOnClickListener(v -> showReleaseChannelDialog());
+        prereleaseToggleCard.setClickable(true);
+        prereleaseToggleCard.setVisibility(View.VISIBLE);
+
         if (update == null) {
             Log.d("ExtrasFragment:updatePrefs", "update is null");
-            mainView.setVisibility(View.GONE);
+            maintainersLayout.removeAllViews();
+            donateCard.setVisibility(View.GONE);
+            forumCard.setVisibility(View.GONE);
+            websiteCard.setVisibility(View.GONE);
+            newsCard.setVisibility(View.GONE);
             return;
         }
 
@@ -102,49 +111,43 @@ public class ExtrasFragment extends Fragment {
             newsCard.setClickable(true);
             newsCard.setVisibility(View.VISIBLE);
         }
-
-        SharedPreferences sharedPrefs = requireActivity().getSharedPreferences(
-                "updates_preferences", Context.MODE_PRIVATE);
-        boolean prereleases_enabled = Utils.getPrereleaseEnabled(sharedPrefs);
-
-        String prerelease_button_summary;
-        if (prereleases_enabled) {
-            prerelease_button_summary = getString(R.string.prerelease_info_enabled_summary);
-        } else {
-            prerelease_button_summary = getString(R.string.prerelease_info_disabled_summary);
-        }
-
-        prereleaseToggleCard.setSummary(prerelease_button_summary);
-        prereleaseToggleCard.setOnClickListener(v -> showPrereleaseToggleDialog());
-        prereleaseToggleCard.setClickable(true);
-        prereleaseToggleCard.setVisibility(View.VISIBLE);
     }
 
-    private void showPrereleaseToggleDialog() {
+    private void showReleaseChannelDialog() {
         Activity context = requireActivity();
         SharedPreferences sharedPrefs = context.getSharedPreferences(
                 "updates_preferences", Context.MODE_PRIVATE);
-        boolean prereleases_enabled = Utils.getPrereleaseEnabled(sharedPrefs);
+        String release_channel = Utils.getReleaseChannel(sharedPrefs);
         int checkedItem;
 
-        if (prereleases_enabled) {
+        if (release_channel.equals("dcos_stable")) {
             checkedItem = 0;
-        } else {
+        } else if (release_channel.equals("dcos_pre")) {
             checkedItem = 1;
+        } else if (release_channel.equals("dcosx_stable")) {
+            checkedItem = 2;
+        } else {
+            checkedItem = 3;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.prerelease_info_title)
-                .setSingleChoiceItems(R.array.prerelease_options, checkedItem, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.release_channel_info_title)
+                .setSingleChoiceItems(R.array.release_channel_options, checkedItem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        boolean enabled;
+                        String release_channel;
+
                         if (i == 0) {
-                            enabled = true;
+                            release_channel = "dcos_stable";
+                        } else if (i == 1) {
+                            release_channel = "dcos_pre";
+                        } else if (i == 2) {
+                            release_channel = "dcosx_stable";
                         } else {
-                            enabled = false;
+                            release_channel = "dcosx_pre";
                         }
-                        Utils.setPrereleaseStatus(sharedPrefs, enabled);
+
+                        Utils.setReleaseChannel(sharedPrefs, release_channel);
                         updater.downloadUpdatesList(true);
                     }
                 });

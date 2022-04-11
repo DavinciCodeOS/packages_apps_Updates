@@ -107,7 +107,8 @@
             app:contentPaddingRight="16dp"
             app:contentPaddingTop="16dp"
             extra_card_view:image="@drawable/ic_settings_icon"
-            extra_card_view:title="@string/prerelease_info_title" >
+            extra_card_view:summary="@string/release_channel_info_summary"
+            extra_card_view:title="@string/release_channel_info_title" >
 
         </org.pixelexperience.ota.ExtraCardView>
 
